@@ -117,6 +117,7 @@ export async function POST(request: NextRequest) {
 
     if (!supabaseServiceKey) {
       console.error("Missing SUPABASE_SERVICE_KEY environment variable")
+      console.error("Available env vars:", Object.keys(process.env).filter(k => k.includes('SUPABASE')))
       return NextResponse.json(
         {
           error: "Server configuration error",
@@ -124,6 +125,16 @@ export async function POST(request: NextRequest) {
         },
         { status: 500 }
       )
+    }
+
+    // Verify we have both URL and key
+    if (!supabaseUrl || !supabaseServiceKey) {
+      console.error("Supabase configuration incomplete:", {
+        hasUrl: !!supabaseUrl,
+        hasKey: !!supabaseServiceKey,
+        urlLength: supabaseUrl?.length,
+        keyLength: supabaseServiceKey?.length,
+      })
     }
 
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
