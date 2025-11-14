@@ -1,7 +1,6 @@
 "use client"
 
 import * as React from "react"
-import { useRouter } from "next/navigation"
 import { Input } from "@/components/ui/input"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
@@ -30,7 +29,6 @@ interface SurveyResponse {
 }
 
 export default function ResponsesPage() {
-  const router = useRouter()
   const [password, setPassword] = React.useState("")
   const [isAuthenticated, setIsAuthenticated] = React.useState(false)
   const [responses, setResponses] = React.useState<SurveyResponse[]>([])

@@ -1,13 +1,12 @@
 "use client"
 
 import * as React from "react"
-import { FormApi } from "@tanstack/react-form"
 import { Separator } from "@/components/ui/separator"
 import { Pencil } from "lucide-react"
-import { SurveyFormData } from "@/types/survey"
 
 interface Step6ReviewProps {
-  form: FormApi<SurveyFormData, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
   onEditStep: (step: number) => void
 }
 
@@ -145,7 +144,7 @@ export function Step6Review({ form, onEditStep }: Step6ReviewProps) {
               <div className="text-muted-foreground">{communicationLabels[values.communication_score] || values.communication_score}</div>
             </div>
             <div>
-              <div className="font-medium mb-1">How would you rate VLN's trustworthiness as a source of medical education?</div>
+              <div className="font-medium mb-1">How would you rate VLN&apos;s trustworthiness as a source of medical education?</div>
               <div className="text-muted-foreground">{trustworthinessLabels[values.trustworthiness] || values.trustworthiness}</div>
             </div>
             <div>
@@ -188,7 +187,7 @@ export function Step6Review({ form, onEditStep }: Step6ReviewProps) {
               </div>
             </div>
             <div>
-              <div className="font-medium mb-1">Do you refer colleagues, patients, or peers to VLN's website or resources?</div>
+              <div className="font-medium mb-1">Do you refer colleagues, patients, or peers to VLN&apos;s website or resources?</div>
               <div className="text-muted-foreground">{values.refer_others ? "Yes" : "No"}</div>
             </div>
           </div>

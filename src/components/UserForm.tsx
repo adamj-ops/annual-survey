@@ -158,7 +158,7 @@ export function UserForm() {
               onBlur: validateUsername
             },
             children: (field) => (
-              <FormField name="username" form={form}>
+              <FormField name="username">
                 <FormItem>
                   <FormLabel>Username</FormLabel>
                   <FormControl fieldApi={field}>
@@ -187,7 +187,7 @@ export function UserForm() {
               onBlur: validateEmail
             },
             children: (field) => (
-              <FormField name="email" form={form}>
+              <FormField name="email">
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl fieldApi={field}>
@@ -217,7 +217,7 @@ export function UserForm() {
               onBlur: validatePassword
             },
             children: (field) => (
-              <FormField name="password" form={form}>
+              <FormField name="password">
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl fieldApi={field}>

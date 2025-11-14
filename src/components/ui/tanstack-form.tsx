@@ -14,6 +14,7 @@ import { Label } from "@/components/ui/label"
 const Form = React.forwardRef<
   HTMLFormElement, 
   {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     form: FormApi<any, any, any, any, any, any, any, any, any, any>,
     children: React.ReactNode
   } & React.HTMLAttributes<HTMLFormElement>
@@ -46,13 +47,11 @@ const FormFieldContext = React.createContext<FormFieldContextValue>(
 // Field component to connect TanStack Form fields
 interface FormFieldProps {
   name: string
-  form: FormApi<any, any, any, any, any, any, any, any, any, any>
   children: React.ReactNode
 }
 
 function FormField({ 
   name, 
-  form, 
   children 
 }: FormFieldProps) {
   return (
@@ -125,6 +124,7 @@ function FormLabel({
 
 // FormControl component
 interface FormControlProps extends React.ComponentProps<typeof Slot> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fieldApi?: FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>
 }
 
@@ -164,6 +164,7 @@ function FormDescription({ className, ...props }: React.ComponentProps<"p">) {
 
 // FormMessage component
 interface FormMessageProps extends React.ComponentProps<"p"> {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   fieldApi?: FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>
 }
 

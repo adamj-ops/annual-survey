@@ -6,6 +6,7 @@ import { Textarea } from "@/components/ui/textarea"
 import { FormControl, FormDescription, FormItem, FormLabel, FormMessage } from "@/components/ui/tanstack-form"
 
 interface TextAreaFieldProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>
   label: string
   description?: string

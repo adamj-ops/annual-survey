@@ -12,6 +12,7 @@ interface CheckboxOption {
 }
 
 interface CheckboxGroupFieldProps {
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   field: FieldApi<any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any, any>
   label: string
   description?: string

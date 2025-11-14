@@ -47,22 +47,7 @@ export function MultiStepSurvey() {
   const [isSubmitting, setIsSubmitting] = React.useState(false)
   const [isSubmitted, setIsSubmitted] = React.useState(false)
 
-  // Load draft from localStorage
-  React.useEffect(() => {
-    const saved = localStorage.getItem("survey_draft")
-    if (saved) {
-      try {
-        const parsed = JSON.parse(saved)
-        form.setFieldValue("name", parsed.name || "")
-        form.setFieldValue("email", parsed.email || "")
-        // Load other fields as needed
-      } catch (e) {
-        console.error("Failed to load draft", e)
-      }
-    }
-  }, [])
-
-  const form = useForm<SurveyFormData>({
+  const form = useForm({
     defaultValues,
     onSubmit: async ({ value }) => {
       setIsSubmitting(true)
@@ -150,6 +135,21 @@ export function MultiStepSurvey() {
     },
   })
 
+  // Load draft from localStorage
+  React.useEffect(() => {
+    const saved = localStorage.getItem("survey_draft")
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved)
+        form.setFieldValue("name", parsed.name || "")
+        form.setFieldValue("email", parsed.email || "")
+        // Load other fields as needed
+      } catch (e) {
+        console.error("Failed to load draft", e)
+      }
+    }
+  }, [form])
+
   // Save draft to localStorage on change
   React.useEffect(() => {
     const values = form.state.values
@@ -160,7 +160,7 @@ export function MultiStepSurvey() {
     }))
   }, [form.state.values])
 
-  const validateCurrentStep = (): boolean => {
+  const validateCurrentStep = React.useCallback((): boolean => {
     const values = form.state.values
 
     switch (currentStep) {
@@ -200,7 +200,7 @@ export function MultiStepSurvey() {
       default:
         return false
     }
-  }
+  }, [form.state.values, currentStep])
 
   const handleNext = () => {
     if (currentStep < TOTAL_STEPS - 1) {
@@ -234,7 +234,7 @@ export function MultiStepSurvey() {
     return unsubscribe
   }, [form])
   
-  const canProceed = React.useMemo(() => validateCurrentStep(), [currentStep, form.state.values])
+  const canProceed = React.useMemo(() => validateCurrentStep(), [validateCurrentStep])
 
   const renderStep = () => {
     if (isSubmitted && currentStep === TOTAL_STEPS - 1) {

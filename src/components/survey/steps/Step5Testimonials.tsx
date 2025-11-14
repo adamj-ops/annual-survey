@@ -1,14 +1,13 @@
 "use client"
 
 import * as React from "react"
-import { FormApi } from "@tanstack/react-form"
 import { FormField } from "@/components/ui/tanstack-form"
 import { TextAreaField } from "../fields/TextAreaField"
 import { RadioGroupField } from "../fields/RadioGroupField"
-import { SurveyFormData } from "@/types/survey"
 
 interface Step5TestimonialsProps {
-  form: FormApi<SurveyFormData, any>
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  form: any
 }
 
 export function Step5Testimonials({ form }: Step5TestimonialsProps) {
@@ -25,8 +24,9 @@ export function Step5Testimonials({ form }: Step5TestimonialsProps) {
         {/* Testimonial */}
         {form.Field({
           name: "testimonial",
-          children: (field) => (
-            <FormField name="testimonial" form={form}>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          children: (field: any) => (
+            <FormField name="testimonial">
               <TextAreaField
                 field={field}
                 label="Please share any testimonials or experiences regarding VLN"
@@ -42,15 +42,17 @@ export function Step5Testimonials({ form }: Step5TestimonialsProps) {
         {form.Field({
           name: "may_contact",
           validators: {
-            onChange: ({ value }) => {
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
+            onChange: ({ value }: { value: any }) => {
               if (value === undefined || value === null) {
                 return "Please select an option"
               }
               return undefined
             },
           },
-          children: (field) => (
-            <FormField name="may_contact" form={form}>
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          children: (field: any) => (
+            <FormField name="may_contact">
               <RadioGroupField
                 field={field}
                 label="May VLN contact you regarding your survey responses? *"

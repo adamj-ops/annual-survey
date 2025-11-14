@@ -49,15 +49,6 @@ interface ResponsesTableProps {
   responses: SurveyResponse[]
 }
 
-const scoreLabels: Record<number, string> = {
-  1: "Not at all",
-  2: "Somewhat difficult",
-  3: "Somewhat",
-  4: "Somewhat easy",
-  5: "Well",
-  7: "Very familiar / Very well",
-}
-
 const familiarityLabels: Record<number, string> = {
   1: "Not at all",
   3: "Somewhat",
