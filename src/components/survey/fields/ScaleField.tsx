@@ -60,7 +60,7 @@ export function ScaleField({
             <ToggleGroupItem
               key={option.value}
               value={option.value}
-              className="flex-1 min-w-[60px] sm:min-w-0 text-xs sm:text-sm data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary/90"
+              className="flex-1 min-w-[70px] sm:min-w-0 text-[11px] sm:text-sm leading-tight sm:leading-normal py-2 sm:py-1.5 px-1 sm:px-3 whitespace-normal sm:whitespace-nowrap data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary/90"
             >
               {option.label}
             </ToggleGroupItem>
