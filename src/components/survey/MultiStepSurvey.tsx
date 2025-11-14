@@ -42,6 +42,27 @@ const defaultValues: Partial<SurveyFormData> = {
   may_contact: undefined,
 }
 
+type SurveyLogoProps = {
+  asHeading?: boolean
+}
+
+function SurveyLogo({ asHeading = false }: SurveyLogoProps) {
+  const Wrapper = asHeading ? "h1" : "div"
+  return (
+    <Wrapper className="flex justify-center">
+      {asHeading && <span className="sr-only">Annual Survey</span>}
+      <Image
+        src="/vln_logo.png"
+        alt="Vasculearn Network Annual Survey"
+        width={400}
+        height={225}
+        priority={asHeading}
+        className={asHeading ? "w-64 sm:w-72 md:w-80 h-auto" : "w-48 sm:w-56 md:w-64 h-auto"}
+      />
+    </Wrapper>
+  )
+}
+
 export function MultiStepSurvey() {
   const [currentStep, setCurrentStep] = React.useState(0)
   const [isSubmitting, setIsSubmitting] = React.useState(false)
@@ -266,30 +287,7 @@ export function MultiStepSurvey() {
   return (
     <div className="w-full max-w-4xl mx-auto">
       <div className="mb-8 text-center">
-        {currentStep === 0 ? (
-          <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold flex flex-col sm:flex-row items-center sm:items-baseline justify-center gap-2 sm:gap-3">
-            <Image
-              src="/vln-logo.svg"
-              alt="Vasculearn Network"
-              width={80}
-              height={27}
-              priority
-              className="h-auto sm:translate-y-[10px] sm:translate-x-[6px]"
-            />
-            Annual Survey
-          </h1>
-        ) : (
-          <div className="flex justify-center">
-            <Image
-              src="/vln-logo.svg"
-              alt="Vasculearn Network"
-              width={80}
-              height={27}
-              priority
-              className="h-auto"
-            />
-          </div>
-        )}
+        {currentStep === 0 ? <SurveyLogo asHeading /> : <SurveyLogo />}
       </div>
       {!isSubmitted && currentStep !== 0 && (
         <div className="mb-6">
