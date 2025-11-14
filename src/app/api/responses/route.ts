@@ -29,9 +29,16 @@ export async function GET(request: NextRequest) {
     const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
 
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("Missing Supabase environment variables")
+      const missingVars = []
+      if (!supabaseUrl) missingVars.push("NEXT_PUBLIC_SUPABASE_URL")
+      if (!supabaseServiceKey) missingVars.push("SUPABASE_SERVICE_KEY")
+      
+      console.error("Missing Supabase environment variables:", missingVars)
       return NextResponse.json(
-        { error: "Server configuration error" },
+        { 
+          error: "Server configuration error",
+          message: `Missing required environment variables: ${missingVars.join(", ")}. Please set these in your Vercel project settings.`
+        },
         { status: 500 }
       )
     }
