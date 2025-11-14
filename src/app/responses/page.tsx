@@ -87,7 +87,8 @@ export default function ResponsesPage() {
         toast.success("Access granted")
       } else {
         const errorData = await response.json().catch(() => ({}))
-        toast.error(errorData.error || "Invalid password")
+        const errorMessage = errorData.error || errorData.message || "Invalid password"
+        toast.error(errorMessage)
         setLoading(false)
       }
     } catch {

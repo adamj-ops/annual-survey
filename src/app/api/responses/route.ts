@@ -5,11 +5,17 @@ export async function GET(request: NextRequest) {
   try {
     // Check for admin authentication
     const authHeader = request.headers.get("authorization")
-    const adminPassword = process.env.ADMIN_PASSWORD?.trim() || "admin123" // Default for development
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim()
+    
+    // Fallback for development if not set
+    if (!adminPassword) {
+      console.warn("ADMIN_PASSWORD not set, using default")
+    }
+    const finalPassword = adminPassword || "admin123"
 
     if (!authHeader) {
       return NextResponse.json(
-        { error: "Unauthorized" },
+        { error: "Unauthorized", message: "No authorization header provided" },
         { status: 401 }
       )
     }
@@ -17,9 +23,16 @@ export async function GET(request: NextRequest) {
     // Extract password from Bearer token
     const providedPassword = authHeader.replace(/^Bearer\s+/i, "").trim()
     
-    if (providedPassword !== adminPassword) {
+    // Compare passwords (case-sensitive, exact match)
+    if (providedPassword !== finalPassword) {
+      // Log for debugging (remove sensitive info)
+      console.log("Password mismatch", {
+        providedLength: providedPassword.length,
+        expectedLength: finalPassword.length,
+        match: providedPassword === finalPassword
+      })
       return NextResponse.json(
-        { error: "Invalid password" },
+        { error: "Invalid password", message: "The password you entered is incorrect" },
         { status: 401 }
       )
     }
