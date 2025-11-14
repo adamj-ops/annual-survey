@@ -84,6 +84,17 @@ export async function POST(request: NextRequest) {
         autoRefreshToken: false,
         persistSession: false,
       },
+      global: {
+        fetch: (url, options = {}) => {
+          return fetch(url, {
+            ...options,
+            headers: {
+              ...options.headers,
+              'User-Agent': 'Vercel-Serverless',
+            },
+          })
+        },
+      },
     })
     const { data: insertedData, error } = await supabase
       .from("survey_responses")

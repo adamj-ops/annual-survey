@@ -38,8 +38,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Create Supabase admin client
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim()
 
     if (!supabaseUrl || !supabaseServiceKey) {
       const missingVars = []
@@ -56,10 +56,44 @@ export async function GET(request: NextRequest) {
       )
     }
 
+    // Validate URL format
+    try {
+      new URL(supabaseUrl)
+    } catch {
+      console.error("Invalid Supabase URL format:", supabaseUrl)
+      return NextResponse.json(
+        { 
+          error: "Server configuration error",
+          message: "Invalid Supabase URL format. Please check NEXT_PUBLIC_SUPABASE_URL in your environment variables."
+        },
+        { status: 500 }
+      )
+    }
+
     const supabase = createClient(supabaseUrl, supabaseServiceKey, {
       auth: {
         autoRefreshToken: false,
         persistSession: false,
+      },
+      global: {
+        fetch: async (url, options = {}) => {
+          try {
+            const response = await fetch(url, {
+              ...options,
+              headers: {
+                ...options.headers,
+                'User-Agent': 'Vercel-Serverless',
+              },
+            })
+            return response
+          } catch (fetchError) {
+            console.error("Supabase fetch error:", {
+              url: typeof url === 'string' ? url : url.toString(),
+              error: fetchError instanceof Error ? fetchError.message : String(fetchError)
+            })
+            throw fetchError
+          }
+        },
       },
     })
     const { searchParams } = new URL(request.url)
@@ -80,9 +114,18 @@ export async function GET(request: NextRequest) {
       .range(offset, offset + limit - 1)
 
     if (error) {
-      console.error("Database error:", error)
+      console.error("Database error:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      })
       return NextResponse.json(
-        { error: "Failed to fetch responses", details: error.message },
+        { 
+          error: "Failed to fetch responses", 
+          details: error.message,
+          hint: error.hint || "Please check your Supabase connection and database configuration"
+        },
         { status: 500 }
       )
     }
