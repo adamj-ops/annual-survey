@@ -55,8 +55,7 @@ export default function ResponsesPage() {
         authPasswordRef.current = ""
         toast.error("Session expired. Please login again.")
       }
-    } catch (error) {
-      console.error("Load error:", error)
+    } catch {
       toast.error("Failed to load responses")
     } finally {
       setLoading(false)
@@ -64,7 +63,6 @@ export default function ResponsesPage() {
   }, [])
 
   const handleLogin = async () => {
-    console.log("Login attempt, password length:", password.length)
     if (!password.trim()) {
       toast.error("Please enter a password")
       return
@@ -73,15 +71,12 @@ export default function ResponsesPage() {
     setLoading(true)
     try {
       const authHeader = `Bearer ${password.trim()}`
-      console.log("Sending request with auth header:", authHeader.substring(0, 20) + "...")
       
       const response = await fetch("/api/responses", {
         headers: {
           Authorization: authHeader,
         },
       })
-
-      console.log("Response status:", response.status)
 
       if (response.ok) {
         const data = await response.json()
@@ -92,13 +87,11 @@ export default function ResponsesPage() {
         toast.success("Access granted")
       } else {
         const errorData = await response.json().catch(() => ({}))
-        console.error("Login failed:", errorData)
         toast.error(errorData.error || "Invalid password")
         setLoading(false)
       }
-    } catch (error) {
-      console.error("Login error:", error)
-      toast.error("Failed to authenticate")
+    } catch {
+      toast.error("Failed to authenticate. Please try again.")
       setLoading(false)
     }
   }
@@ -134,7 +127,6 @@ export default function ResponsesPage() {
               value={password}
               onChange={(e) => {
                 setPassword(e.target.value)
-                console.log("Password changed, length:", e.target.value.length)
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter") {
@@ -155,9 +147,6 @@ export default function ResponsesPage() {
             >
               {loading ? "Authenticating..." : "Login"}
             </Button>
-            <p className="text-xs text-muted-foreground text-center">
-              Password: Survey2025
-            </p>
           </CardContent>
         </Card>
       </div>

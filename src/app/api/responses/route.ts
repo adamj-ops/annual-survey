@@ -5,19 +5,21 @@ export async function GET(request: NextRequest) {
   try {
     // Check for admin authentication
     const authHeader = request.headers.get("authorization")
-    const adminPassword = process.env.ADMIN_PASSWORD || "admin123" // Default for development
+    const adminPassword = process.env.ADMIN_PASSWORD?.trim() || "admin123" // Default for development
 
-    // Debug logging (remove in production)
-    console.log("Auth check:", {
-      hasHeader: !!authHeader,
-      headerValue: authHeader?.substring(0, 20) + "...",
-      expectedPassword: adminPassword,
-      passwordLength: adminPassword?.length
-    })
-
-    if (!authHeader || authHeader !== `Bearer ${adminPassword}`) {
+    if (!authHeader) {
       return NextResponse.json(
         { error: "Unauthorized" },
+        { status: 401 }
+      )
+    }
+
+    // Extract password from Bearer token
+    const providedPassword = authHeader.replace(/^Bearer\s+/i, "").trim()
+    
+    if (providedPassword !== adminPassword) {
+      return NextResponse.json(
+        { error: "Invalid password" },
         { status: 401 }
       )
     }
