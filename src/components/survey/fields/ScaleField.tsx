@@ -36,7 +36,7 @@ export function ScaleField({
           part === "*" ? (
             <span key={index} className="text-primary">{part}</span>
           ) : (
-            <span key={index}>{part}</span>
+            <React.Fragment key={index}>{part}</React.Fragment>
           )
         )}
       </FormLabel>
