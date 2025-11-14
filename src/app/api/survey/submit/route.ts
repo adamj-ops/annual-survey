@@ -143,12 +143,18 @@ export async function POST(request: NextRequest) {
         persistSession: false,
       },
       global: {
+        headers: {
+          'apikey': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+        },
         fetch: (url, options = {}) => {
           return fetch(url, {
             ...options,
             headers: {
               ...options.headers,
               'User-Agent': 'Vercel-Serverless',
+              'apikey': supabaseServiceKey,
+              'Authorization': `Bearer ${supabaseServiceKey}`,
             },
           })
         },

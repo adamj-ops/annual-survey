@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { getServerSupabaseUrl } from "@/lib/supabase-config"
 
 export async function GET(request: NextRequest) {
   try {
@@ -38,33 +39,31 @@ export async function GET(request: NextRequest) {
     }
 
     // Create Supabase admin client
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL?.trim()
-    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim()
-
-    if (!supabaseUrl || !supabaseServiceKey) {
-      const missingVars = []
-      if (!supabaseUrl) missingVars.push("NEXT_PUBLIC_SUPABASE_URL")
-      if (!supabaseServiceKey) missingVars.push("SUPABASE_SERVICE_KEY")
-      
-      console.error("Missing Supabase environment variables:", missingVars)
+    let supabaseUrl: string
+    try {
+      supabaseUrl = getServerSupabaseUrl()
+    } catch (configError) {
+      console.error("Supabase URL configuration error:", configError)
       return NextResponse.json(
-        { 
+        {
           error: "Server configuration error",
-          message: `Missing required environment variables: ${missingVars.join(", ")}. Please set these in your Vercel project settings.`
+          message:
+            configError instanceof Error
+              ? configError.message
+              : "Supabase URL is not configured correctly.",
         },
         { status: 500 }
       )
     }
 
-    // Validate URL format
-    try {
-      new URL(supabaseUrl)
-    } catch {
-      console.error("Invalid Supabase URL format:", supabaseUrl)
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim()
+
+    if (!supabaseServiceKey) {
+      console.error("Missing SUPABASE_SERVICE_KEY environment variable")
       return NextResponse.json(
-        { 
+        {
           error: "Server configuration error",
-          message: "Invalid Supabase URL format. Please check NEXT_PUBLIC_SUPABASE_URL in your environment variables."
+          message: "SUPABASE_SERVICE_KEY is not set.",
         },
         { status: 500 }
       )
