@@ -26,9 +26,20 @@ export function ScaleField({
 }: ScaleFieldProps) {
   const value = field.state.value ?? undefined
 
+  // Split label to style asterisk separately
+  const labelParts = label.split(/(\*)/)
+  
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel>
+        {labelParts.map((part, index) => 
+          part === "*" ? (
+            <span key={index} className="text-primary">{part}</span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </FormLabel>
       <FormControl fieldApi={field}>
         <ToggleGroup
           type="single"

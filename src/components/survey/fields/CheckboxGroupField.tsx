@@ -40,9 +40,20 @@ export function CheckboxGroupField({
     }
   }
 
+  // Split label to style asterisk separately
+  const labelParts = label.split(/(\*)/)
+  
   return (
     <FormItem>
-      <FormLabel>{label}</FormLabel>
+      <FormLabel>
+        {labelParts.map((part, index) => 
+          part === "*" ? (
+            <span key={index} className="text-primary">{part}</span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </FormLabel>
       <FormControl fieldApi={field}>
         <div className="space-y-4">
           {options.map((option) => (

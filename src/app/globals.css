@@ -126,6 +126,6 @@
     @apply font-normal tracking-[-0.04em];
   }
   p {
-    @apply tracking-[-0.02em];
+    @apply tracking-[-0.02em] text-[16px] sm:text-[18px];
   }
 }

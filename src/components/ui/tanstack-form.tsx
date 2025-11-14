@@ -115,7 +115,7 @@ function FormLabel({
   return (
     <Label
       data-slot="form-label"
-      className={cn("text-base font-normal tracking-[-0.01em]", className)}
+      className={cn("text-base font-normal tracking-[-0.01em] [&_*]:text-primary", className)}
       htmlFor={formItemId}
       {...props}
     />

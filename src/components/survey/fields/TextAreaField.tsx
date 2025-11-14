@@ -27,7 +27,7 @@ export function TextAreaField({
     <FormItem>
       <FormLabel>
         {label}
-        {required && <span className="text-destructive ml-1">*</span>}
+        {required && <span className="text-primary ml-1">*</span>}
       </FormLabel>
       <FormControl fieldApi={field}>
         <Textarea

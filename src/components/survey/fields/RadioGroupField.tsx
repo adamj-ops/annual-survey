@@ -33,9 +33,20 @@ export function RadioGroupField({
     ? (rawValue ? "yes" : "no")
     : rawValue
 
+  // Split label to style asterisk separately
+  const labelParts = label.split(/(\*)/)
+  
   return (
     <FormItem>
-      <FormLabel className="mb-2">{label}</FormLabel>
+      <FormLabel className="mb-2">
+        {labelParts.map((part, index) => 
+          part === "*" ? (
+            <span key={index} className="text-primary">{part}</span>
+          ) : (
+            <span key={index}>{part}</span>
+          )
+        )}
+      </FormLabel>
       <FormControl fieldApi={field}>
         <RadioGroup
           value={displayValue}

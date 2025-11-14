@@ -37,7 +37,7 @@ export function Step1AboutYou({ form }: Step1AboutYouProps) {
             <FormField name="name">
               <FormItem>
                 <FormLabel>
-                  Your name <span className="text-destructive">*</span>
+                  Your name <span className="text-primary">*</span>
                 </FormLabel>
                 <FormControl fieldApi={field}>
                   <Input
@@ -74,7 +74,7 @@ export function Step1AboutYou({ form }: Step1AboutYouProps) {
             <FormField name="email">
               <FormItem>
                 <FormLabel>
-                  Your email <span className="text-destructive">*</span>
+                  Your email <span className="text-primary">*</span>
                 </FormLabel>
                 <FormControl fieldApi={field}>
                   <Input
