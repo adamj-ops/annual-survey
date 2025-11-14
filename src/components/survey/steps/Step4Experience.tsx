@@ -41,11 +41,15 @@ export function Step4Experience({ form }: Step4ExperienceProps) {
               <ScaleField
                 field={field}
                 label="How easy has it been to find and use educational resources on our website and community platform? *"
+                description="1 = Very difficult, 7 = Very easy"
                 options={[
-                  { value: "very_difficult", label: "Very difficult" },
-                  { value: "somewhat_difficult", label: "Somewhat difficult" },
-                  { value: "somewhat_easy", label: "Somewhat easy" },
-                  { value: "very_easy", label: "Very easy" },
+                  { value: "1", label: "1" },
+                  { value: "2", label: "2" },
+                  { value: "3", label: "3" },
+                  { value: "4", label: "4" },
+                  { value: "5", label: "5" },
+                  { value: "6", label: "6" },
+                  { value: "7", label: "7" },
                 ]}
               />
             </FormField>
@@ -88,13 +92,11 @@ export function Step4Experience({ form }: Step4ExperienceProps) {
                   field={field}
                   label="Which VLN resources do you find most valuable? *"
                   options={[
-                    { value: "educational_articles", label: "Educational articles" },
-                    { value: "webinars_cme", label: "Webinars / CME events" },
-                    { value: "patient_support_groups", label: "Patient support groups" },
-                    { value: "podcasts_videos", label: "Podcasts & videos" },
-                    { value: "clinical_toolkits", label: "Clinical toolkits" },
-                    { value: "research_summaries", label: "Research summaries" },
-                    { value: "community_discussions", label: "Community discussions" },
+                  { value: "patient_education", label: "Patient education materials" },
+                  { value: "clinician_education", label: "Clinician education (e.g., webinars, CME courses)" },
+                  { value: "patient_support", label: "Patient support groups" },
+                  { value: "research_updates", label: "Research updates (What's Hot in Clots)" },
+                  { value: "community_discussions", label: "Community Discussion Boards" },
                     { value: "other", label: "Other" },
                   ]}
                   allowOther={true}

@@ -36,22 +36,21 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
               },
             },
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          children: (field: any) => (
+            children: (field: any) => (
               <FormField name="community_factors">
                 <CheckboxGroupField
                   field={field}
                   label="What influenced your decision to join (or not join) the new VLN Community? *"
                   options={[
-                    { value: "content_available", label: "The content available" },
-                    { value: "peer_recommendations", label: "Peer recommendations" },
-                    { value: "curiosity", label: "Curiosity" },
-                    { value: "didnt_know", label: "Didn't know about it" },
-                    { value: "time_constraints", label: "Time constraints" },
-                    { value: "privacy_concerns", label: "Privacy concerns" },
-                    { value: "not_interested", label: "Not interested" },
+                    { value: "not_aware", label: "I wasn’t aware of the community" },
+                    { value: "no_time", label: "I haven’t had time to explore it" },
+                    { value: "unclear_benefits", label: "I am not sure what the benefits are" },
+                    { value: "joined_valuable", label: "I’ve joined and found it valuable" },
+                    { value: "joined_no_time", label: "I’ve joined but haven’t had time to engage" },
+                    { value: "prefer_other_access", label: "I prefer to access resources another way" },
                     { value: "other", label: "Other" },
                   ]}
-                  allowOther={true}
+                  allowOther
                   otherLabel="Other (please specify)"
                 />
               </FormField>
@@ -60,7 +59,7 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
           {form.Field({
             name: "community_factors_other",
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-          children: (field: any) => {
+            children: (field: any) => {
               const hasOther = form.state.values.community_factors?.includes("other")
               if (!hasOther) return null
               return (
@@ -86,11 +85,11 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
 
         {/* Refer Others */}
         {form.Field({
-          name: "refer_others",
+          name: "refer_others_frequency",
           validators: {
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             onChange: ({ value }: { value: any }) => {
-              if (value === undefined || value === null) {
+              if (!value) {
                 return "Please select an option"
               }
               return undefined
@@ -98,13 +97,15 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
           },
           // eslint-disable-next-line @typescript-eslint/no-explicit-any
           children: (field: any) => (
-            <FormField name="refer_others">
+            <FormField name="refer_others_frequency">
               <RadioGroupField
                 field={field}
                 label="Do you refer colleagues, patients, or peers to VLN's website or resources? *"
                 options={[
-                  { value: "yes", label: "Yes" },
-                  { value: "no", label: "No" },
+                  { value: "yes_frequently", label: "Yes, frequently" },
+                  { value: "yes_occasionally", label: "Yes, occasionally" },
+                  { value: "no_but_would", label: "No, but I would" },
+                  { value: "no_unlikely", label: "No, and I am unlikely to" },
                 ]}
               />
             </FormField>

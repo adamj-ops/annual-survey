@@ -29,8 +29,8 @@ export function Step5Testimonials({ form }: Step5TestimonialsProps) {
             <FormField name="testimonial">
               <TextAreaField
                 field={field}
-                label="Please share any testimonials or experiences regarding VLN"
-                description="Optional: Share your experience to be entered to win the Amazon gift card 🎉"
+                label="Please share any testimonials or experiences regarding VLN (must be completed to be eligible to win the Amazon gift card)"
+                description="Share a brief testimonial or story about VLN."
                 placeholder="Share your experience with VLN..."
                 rows={6}
               />

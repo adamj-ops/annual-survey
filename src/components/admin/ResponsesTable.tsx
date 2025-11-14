@@ -37,6 +37,7 @@ interface SurveyResponse {
   unbiased_source: boolean
   community_factors: string[]
   refer_others: boolean
+  refer_others_detail?: string | null
   ease_of_use_score: number
   improvements_text?: string
   valuable_resources: string[]
@@ -50,31 +51,38 @@ interface ResponsesTableProps {
 }
 
 const familiarityLabels: Record<number, string> = {
-  1: "Not at all",
+  1: "Not familiar at all",
   3: "Somewhat",
+  4: "Somewhat familiar",
   5: "Moderately",
   7: "Very familiar",
 }
 
 const brandReflectionLabels: Record<number, string> = {
   1: "Not at all",
-  3: "Somewhat",
-  5: "Well",
-  7: "Very well",
+  3: "Not really",
+  5: "Yes, somewhat / Well",
+  7: "Yes, very well",
 }
 
 const communicationLabels: Record<number, string> = {
-  1: "Not well",
+  1: "Not at all / Not well",
+  2: "Not well",
   3: "Somewhat",
+  4: "Somewhat well",
   5: "Well",
-  7: "Very well",
+  6: "Very well",
+  7: "Extremely well",
 }
 
 const easeOfUseLabels: Record<number, string> = {
-  1: "Very difficult",
-  2: "Somewhat difficult",
-  4: "Somewhat easy",
-  5: "Very easy",
+  1: "1 — Very difficult",
+  2: "2",
+  3: "3",
+  4: "4",
+  5: "5",
+  6: "6",
+  7: "7 — Very easy",
 }
 
 const communityFactorLabels: Record<string, string> = {
@@ -86,6 +94,12 @@ const communityFactorLabels: Record<string, string> = {
   privacy_concerns: "Privacy Concerns",
   not_interested: "Not Interested",
   other: "Other",
+  not_aware: "Not aware of community",
+  no_time: "No time to explore",
+  unclear_benefits: "Unsure of benefits",
+  joined_valuable: "Joined & found valuable",
+  joined_no_time: "Joined but no time to engage",
+  prefer_other_access: "Prefer other access",
 }
 
 const valuableResourceLabels: Record<string, string> = {
@@ -96,6 +110,10 @@ const valuableResourceLabels: Record<string, string> = {
   clinical_toolkits: "Clinical Toolkits",
   research_summaries: "Research Summaries",
   community_discussions: "Community Discussions",
+  patient_education: "Patient education materials",
+  clinician_education: "Clinician education",
+  patient_support: "Patient support groups",
+  research_updates: "Research updates",
   other: "Other",
 }
 
@@ -189,7 +207,7 @@ function ResponseDetailDrawer({ response, open, onOpenChange }: { response: Surv
               <div>
                 <span className="text-sm text-muted-foreground">Would Refer Others:</span>
                 <Badge variant={response.refer_others ? "default" : "secondary"} className="ml-2">
-                  {response.refer_others ? "Yes" : "No"}
+                  {response.refer_others_detail || (response.refer_others ? "Yes" : "No")}
                 </Badge>
               </div>
             </div>
@@ -268,6 +286,7 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
       "Unbiased Source",
       "Community Factors",
       "Refer Others",
+      "Refer Others Detail",
       "Ease of Use Score",
       "Improvements",
       "Valuable Resources",
@@ -289,6 +308,7 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
       r.unbiased_source ? "Yes" : "No",
       r.community_factors.join("; "),
       r.refer_others ? "Yes" : "No",
+      r.refer_others_detail || "",
       r.ease_of_use_score,
       r.improvements_text || "",
       r.valuable_resources.join("; "),
@@ -342,6 +362,7 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
                 <TableHead className="min-w-[100px]">Unbiased</TableHead>
                 <TableHead className="min-w-[200px]">Community Factors</TableHead>
                 <TableHead className="min-w-[100px]">Refer Others</TableHead>
+                <TableHead className="min-w-[140px]">Referral Detail</TableHead>
                 <TableHead className="min-w-[120px]">Ease of Use</TableHead>
                 <TableHead className="min-w-[200px]">Improvements</TableHead>
                 <TableHead className="min-w-[200px]">Valuable Resources</TableHead>
@@ -386,11 +407,15 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
                       <Badge 
                         variant="outline" 
                         className={`text-xs capitalize whitespace-nowrap ${
-                          response.trustworthiness === 'very_high' ? 'text-green-600' :
-                          response.trustworthiness === 'high' ? 'text-green-500' :
-                          response.trustworthiness === 'moderate' ? 'text-yellow-600' :
-                          response.trustworthiness === 'low' ? 'text-orange-600' :
-                          'text-red-600'
+                          response.trustworthiness === 'very_high' || response.trustworthiness === 'very_trustworthy'
+                            ? 'text-green-600'
+                            : response.trustworthiness === 'high' || response.trustworthiness === 'somewhat_trustworthy'
+                              ? 'text-green-500'
+                              : response.trustworthiness === 'moderate' || response.trustworthiness === 'neutral'
+                                ? 'text-yellow-600'
+                                : response.trustworthiness === 'low'
+                                  ? 'text-orange-600'
+                                  : 'text-red-600'
                         }`}
                       >
                         {response.trustworthiness.replace("_", " ")}
@@ -421,9 +446,14 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
                       </div>
                     </TableCell>
                     <TableCell>
-                      <Badge variant={response.refer_others ? "default" : "secondary"} className="text-xs">
-                        {response.refer_others ? "Yes" : "No"}
+                      <Badge variant={response.refer_others ? "default" : "secondary"} className="text-xs whitespace-nowrap">
+                        {response.refer_others_detail || (response.refer_others ? "Yes" : "No")}
                       </Badge>
+                    </TableCell>
+                    <TableCell>
+                      <div className="text-sm truncate max-w-[140px]" title={response.refer_others_detail || ""}>
+                        {response.refer_others_detail || "—"}
+                      </div>
                     </TableCell>
                     <TableCell>
                       <Badge variant="outline" className="text-xs whitespace-nowrap">
@@ -466,14 +496,14 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
                 ))
               )}
             </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TableCell colSpan={16}>Total Responses</TableCell>
-                <TableCell className="text-right font-medium">
-                  {responses.length}
-                </TableCell>
-              </TableRow>
-            </TableFooter>
+        <TableFooter>
+          <TableRow>
+            <TableCell colSpan={17}>Total Responses</TableCell>
+            <TableCell className="text-right font-medium">
+              {responses.length}
+            </TableCell>
+          </TableRow>
+        </TableFooter>
           </Table>
         </div>
       </div>

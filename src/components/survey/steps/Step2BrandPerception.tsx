@@ -40,10 +40,9 @@ export function Step2BrandPerception({ form }: Step2BrandPerceptionProps) {
                 field={field}
                 label="How familiar are you with Vasculearn Network (VLN)? *"
                 options={[
-                  { value: "not_at_all", label: "Not at all" },
-                  { value: "somewhat", label: "Somewhat" },
-                  { value: "moderately", label: "Moderately" },
                   { value: "very_familiar", label: "Very familiar" },
+                  { value: "somewhat_familiar", label: "Somewhat familiar" },
+                  { value: "not_familiar", label: "Not familiar at all" },
                 ]}
               />
             </FormField>
@@ -69,10 +68,10 @@ export function Step2BrandPerception({ form }: Step2BrandPerceptionProps) {
                 field={field}
                 label="Does the Vasculearn Network name and brand reflect our mission to educate about vascular health and connect patients and clinicians? *"
                 options={[
+                  { value: "yes_very_well", label: "Yes, very well" },
+                  { value: "yes_somewhat", label: "Yes, somewhat" },
+                  { value: "not_really", label: "Not really" },
                   { value: "not_at_all", label: "Not at all" },
-                  { value: "somewhat", label: "Somewhat" },
-                  { value: "well", label: "Well" },
-                  { value: "very_well", label: "Very well" },
                 ]}
               />
             </FormField>
@@ -98,10 +97,11 @@ export function Step2BrandPerception({ form }: Step2BrandPerceptionProps) {
                 field={field}
                 label="How well do you feel VLN communicates its mission and goals? *"
                 options={[
-                  { value: "not_well", label: "Not well" },
-                  { value: "somewhat", label: "Somewhat" },
-                  { value: "well", label: "Well" },
+                  { value: "extremely_well", label: "Extremely well" },
                   { value: "very_well", label: "Very well" },
+                  { value: "somewhat_well", label: "Somewhat well" },
+                  { value: "not_well", label: "Not well" },
+                  { value: "not_at_all", label: "Not at all" },
                 ]}
               />
             </FormField>
@@ -127,11 +127,10 @@ export function Step2BrandPerception({ form }: Step2BrandPerceptionProps) {
                 field={field}
                 label="How would you rate VLN's trustworthiness as a source of medical education? *"
                 options={[
-                  { value: "very_low", label: "Very low" },
-                  { value: "low", label: "Low" },
-                  { value: "moderate", label: "Moderate" },
-                  { value: "high", label: "High" },
-                  { value: "very_high", label: "Very high" },
+                  { value: "very_trustworthy", label: "Very trustworthy" },
+                  { value: "somewhat_trustworthy", label: "Somewhat trustworthy" },
+                  { value: "neutral", label: "Neutral" },
+                  { value: "not_trustworthy", label: "Not trustworthy" },
                 ]}
               />
             </FormField>

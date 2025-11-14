@@ -110,9 +110,9 @@ export function Step1AboutYou({ form }: Step1AboutYouProps) {
                 field={field}
                 label="Are you a clinician, patient, or pharmaceutical industry representative? *"
                 options={[
-                  { value: "clinician", label: "Clinician" },
-                  { value: "patient", label: "Patient" },
-                  { value: "industry", label: "Industry Representative" },
+                  { value: "healthcare_professional", label: "Healthcare Professional" },
+                  { value: "patient_family", label: "Patient or family member/friend of patient" },
+                  { value: "pharma_representative", label: "Pharmaceutical industry representative" },
                   { value: "other", label: "Other" },
                 ]}
               />

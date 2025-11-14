@@ -53,14 +53,14 @@ export function ScaleField({
             }
           }}
           variant="outline"
-          className="w-full flex flex-wrap gap-2 sm:gap-0"
+          className={`w-full flex flex-wrap gap-2 ${options.length > 5 ? 'sm:gap-1' : 'sm:gap-0'}`}
           aria-invalid={!!field.state.meta.errors?.length && field.state.meta.isTouched}
         >
           {options.map((option) => (
             <ToggleGroupItem
               key={option.value}
               value={option.value}
-              className="flex-1 min-w-[70px] sm:min-w-0 text-[11px] sm:text-sm leading-tight sm:leading-normal py-2 sm:py-1.5 px-1 sm:px-3 whitespace-normal sm:whitespace-nowrap data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary/90"
+              className={`flex-1 ${options.length > 5 ? 'min-w-[45px] sm:min-w-[50px]' : 'min-w-[70px] sm:min-w-0'} text-[11px] sm:text-sm leading-tight sm:leading-normal py-2 sm:py-1.5 px-1 sm:px-2 whitespace-normal sm:whitespace-nowrap data-[state=on]:bg-primary data-[state=on]:text-primary-foreground data-[state=on]:hover:bg-primary/90`}
             >
               {option.label}
             </ToggleGroupItem>

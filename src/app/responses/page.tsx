@@ -20,6 +20,7 @@ interface SurveyResponse {
   unbiased_source: boolean
   community_factors: string[]
   refer_others: boolean
+  refer_others_detail?: string | null
   ease_of_use_score: number
   improvements_text?: string
   valuable_resources: string[]

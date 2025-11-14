@@ -15,6 +15,9 @@ const roleLabels: Record<string, string> = {
   patient: "Patient",
   industry: "Industry Representative",
   other: "Other",
+  healthcare_professional: "Healthcare Professional",
+  patient_family: "Patient or family member/friend of patient",
+  pharma_representative: "Pharmaceutical industry representative",
 }
 
 const familiarityLabels: Record<string, string> = {
@@ -22,6 +25,8 @@ const familiarityLabels: Record<string, string> = {
   somewhat: "Somewhat",
   moderately: "Moderately",
   very_familiar: "Very familiar",
+  somewhat_familiar: "Somewhat familiar",
+  not_familiar: "Not familiar at all",
 }
 
 const brandReflectionLabels: Record<string, string> = {
@@ -29,6 +34,9 @@ const brandReflectionLabels: Record<string, string> = {
   somewhat: "Somewhat",
   well: "Well",
   very_well: "Very well",
+  yes_very_well: "Yes, very well",
+  yes_somewhat: "Yes, somewhat",
+  not_really: "Not really",
 }
 
 const communicationLabels: Record<string, string> = {
@@ -36,6 +44,9 @@ const communicationLabels: Record<string, string> = {
   somewhat: "Somewhat",
   well: "Well",
   very_well: "Very well",
+  extremely_well: "Extremely well",
+  somewhat_well: "Somewhat well",
+  not_at_all: "Not at all",
 }
 
 const trustworthinessLabels: Record<string, string> = {
@@ -44,6 +55,10 @@ const trustworthinessLabels: Record<string, string> = {
   moderate: "Moderate",
   high: "High",
   very_high: "Very high",
+  very_trustworthy: "Very trustworthy",
+  somewhat_trustworthy: "Somewhat trustworthy",
+  neutral: "Neutral",
+  not_trustworthy: "Not trustworthy",
 }
 
 const communityFactorLabels: Record<string, string> = {
@@ -55,6 +70,12 @@ const communityFactorLabels: Record<string, string> = {
   privacy_concerns: "Privacy concerns",
   not_interested: "Not interested",
   other: "Other",
+  not_aware: "I wasn’t aware of the community",
+  no_time: "I haven’t had time to explore it",
+  unclear_benefits: "I am not sure what the benefits are",
+  joined_valuable: "I’ve joined and found it valuable",
+  joined_no_time: "I’ve joined but haven’t had time to engage",
+  prefer_other_access: "I prefer to access resources another way",
 }
 
 const easeOfUseLabels: Record<string, string> = {
@@ -62,6 +83,13 @@ const easeOfUseLabels: Record<string, string> = {
   somewhat_difficult: "Somewhat difficult",
   somewhat_easy: "Somewhat easy",
   very_easy: "Very easy",
+  "1": "1 — Very difficult",
+  "2": "2",
+  "3": "3",
+  "4": "4",
+  "5": "5",
+  "6": "6",
+  "7": "7 — Very easy",
 }
 
 const resourceLabels: Record<string, string> = {
@@ -72,7 +100,18 @@ const resourceLabels: Record<string, string> = {
   clinical_toolkits: "Clinical toolkits",
   research_summaries: "Research summaries",
   community_discussions: "Community discussions",
+  patient_education: "Patient education materials",
+  clinician_education: "Clinician education (e.g., webinars, CME courses)",
+  patient_support: "Patient support groups",
+  research_updates: "Research updates (What's Hot in Clots)",
   other: "Other",
+}
+
+const referOthersLabels: Record<string, string> = {
+  yes_frequently: "Yes, frequently",
+  yes_occasionally: "Yes, occasionally",
+  no_but_would: "No, but I would",
+  no_unlikely: "No, and I am unlikely to",
 }
 
 export function Step6Review({ form, onEditStep }: Step6ReviewProps) {
@@ -188,7 +227,9 @@ export function Step6Review({ form, onEditStep }: Step6ReviewProps) {
             </div>
             <div>
               <div className="font-medium mb-1">Do you refer colleagues, patients, or peers to VLN&apos;s website or resources?</div>
-              <div className="text-muted-foreground">{values.refer_others ? "Yes" : "No"}</div>
+              <div className="text-muted-foreground">
+                {referOthersLabels[values.refer_others_frequency] || values.refer_others_frequency || "—"}
+              </div>
             </div>
           </div>
         </div>

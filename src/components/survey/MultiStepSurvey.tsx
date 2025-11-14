@@ -33,7 +33,7 @@ const defaultValues: Partial<SurveyFormData> = {
   unbiased_source: undefined,
   community_factors: [],
   community_factors_other: "",
-  refer_others: undefined,
+  refer_others_frequency: undefined,
   ease_of_use_score: undefined,
   improvements_text: "",
   valuable_resources: [],
@@ -82,8 +82,12 @@ export function MultiStepSurvey() {
         })
 
         if (!response.ok) {
-          const error = await response.json()
-          throw new Error(error.message || "Failed to submit survey")
+          const error = await response.json().catch(() => ({}))
+          const errorMessage = error.details 
+            ? `Validation error: ${JSON.stringify(error.details)}` 
+            : error.message || error.error || "Failed to submit survey"
+          console.error("Submission error:", error)
+          throw new Error(errorMessage)
         }
 
         // Clear draft
@@ -203,7 +207,7 @@ export function MultiStepSurvey() {
       case 3:
         return !!(
           values.community_factors && values.community_factors.length > 0 &&
-          values.refer_others !== undefined &&
+          values.refer_others_frequency &&
           values.premier_resource !== undefined &&
           values.unbiased_source !== undefined
         )
@@ -316,7 +320,7 @@ export function MultiStepSurvey() {
             onNext={handleNext}
             isSubmitting={isSubmitting}
             canProceed={canProceed}
-            nextLabel={currentStep === 6 ? "Review" : currentStep === 0 ? "Get Started" : undefined}
+            nextLabel={currentStep === 6 ? "Submit" : currentStep === 0 ? "Get Started" : undefined}
           />
         )}
       </Form>
