@@ -57,7 +57,8 @@ export default function ResponsesPage() {
         authPasswordRef.current = ""
         toast.error("Session expired. Please login again.")
       }
-    } catch {
+    } catch (error) {
+      console.error("Error loading responses:", error)
       toast.error("Failed to load responses")
     } finally {
       setLoading(false)
@@ -93,7 +94,8 @@ export default function ResponsesPage() {
         toast.error(errorMessage)
         setLoading(false)
       }
-    } catch {
+    } catch (error) {
+      console.error("Authentication error:", error)
       toast.error("Failed to authenticate. Please try again.")
       setLoading(false)
     }

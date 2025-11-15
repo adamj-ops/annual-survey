@@ -60,6 +60,7 @@ export async function GET(request: NextRequest) {
 
     if (!supabaseServiceKey) {
       console.error("Missing SUPABASE_SERVICE_KEY environment variable")
+      console.error("Available env vars:", Object.keys(process.env).filter(k => k.includes('SUPABASE')))
       return NextResponse.json(
         {
           error: "Server configuration error",
