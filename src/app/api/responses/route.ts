@@ -8,11 +8,9 @@ export async function GET(request: NextRequest) {
     const authHeader = request.headers.get("authorization")
     const adminPassword = (process.env.ADMIN_PASSWORD || "").trim()
     
-    // Fallback for development if not set
-    if (!adminPassword) {
-      console.warn("ADMIN_PASSWORD not set, using default")
-    }
-    const finalPassword = adminPassword || "admin123"
+    // Use the set password or fallback for development
+    const finalPassword = adminPassword || "Survey2025"
+    console.log("Using admin password:", finalPassword ? "SET" : "NOT SET")
 
     if (!authHeader) {
       return NextResponse.json(
