@@ -211,7 +211,7 @@ export async function POST(request: NextRequest) {
     }
 
     return NextResponse.json(
-      { success: true, id: insertedData.id },
+      { success: true, id: insertedData?.id },
       { status: 201 }
     )
   } catch (error) {
