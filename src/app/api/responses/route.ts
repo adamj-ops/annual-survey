@@ -78,6 +78,7 @@ export async function GET(request: NextRequest) {
         headers: {
           'apikey': supabaseServiceKey,
           'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
         },
         fetch: async (url, options = {}) => {
           try {
@@ -88,6 +89,7 @@ export async function GET(request: NextRequest) {
                 'User-Agent': 'Vercel-Serverless',
                 'apikey': supabaseServiceKey,
                 'Authorization': `Bearer ${supabaseServiceKey}`,
+                'Content-Type': 'application/json',
               },
             })
             return response
