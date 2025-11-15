@@ -198,7 +198,7 @@ export async function DELETE(request: NextRequest) {
           { status: 400 }
         )
       }
-    } catch (parseError) {
+    } catch {
       return NextResponse.json(
         { error: "Bad request", message: "Invalid JSON in request body" },
         { status: 400 }
