@@ -6,6 +6,7 @@ Add the following to your `.env.local` file:
 
 ```env
 # Supabase Configuration
+SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_URL=https://your-project.supabase.co
 NEXT_PUBLIC_SUPABASE_ANON_KEY=your_anon_key_here
 SUPABASE_SERVICE_KEY=your_service_key_here
@@ -14,7 +15,7 @@ SUPABASE_SERVICE_KEY=your_service_key_here
 ADMIN_PASSWORD=your_secure_password_here
 ```
 
-**Note:** The `NEXT_PUBLIC_SUPABASE_URL` should be your Supabase project URL (e.g., `https://xxxxx.supabase.co`), not the connection string. The connection string is used for direct database access, but the Supabase JS client needs the project URL.
+**Note:** Both `SUPABASE_URL` (server-side) and `NEXT_PUBLIC_SUPABASE_URL` (client-side) should point to the REST URL shown in the Supabase dashboard (e.g., `https://xxxxx.supabase.co`). If you only have the Postgres connection string, the app now normalizes it automatically, but storing the REST URL directly avoids exposing credentials and is preferred.
 
 ## Database
 

@@ -1,12 +1,13 @@
 import { createClient } from '@supabase/supabase-js';
+import { getPublicSupabaseUrl, getServerSupabaseUrl } from '@/lib/supabase-config';
 
 // Client-side Supabase client
 export function createSupabaseClient() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+  const supabaseUrl = getPublicSupabaseUrl();
+  const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY?.trim();
 
-  if (!supabaseUrl || !supabaseAnonKey) {
-    throw new Error('Missing Supabase environment variables');
+  if (!supabaseAnonKey) {
+    throw new Error('Missing NEXT_PUBLIC_SUPABASE_ANON_KEY environment variable');
   }
 
   return createClient(supabaseUrl, supabaseAnonKey);
@@ -14,11 +15,11 @@ export function createSupabaseClient() {
 
 // Server-side admin client
 export function createSupabaseAdmin() {
-  const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
-  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY;
+  const supabaseUrl = getServerSupabaseUrl();
+  const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim();
 
-  if (!supabaseUrl || !supabaseServiceKey) {
-    throw new Error('Missing Supabase admin environment variables');
+  if (!supabaseServiceKey) {
+    throw new Error('Missing SUPABASE_SERVICE_KEY environment variable');
   }
 
   return createClient(supabaseUrl, supabaseServiceKey, {

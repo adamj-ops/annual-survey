@@ -102,6 +102,10 @@ const form = useForm<any, any, any, any, any, any, any, any, any, any>({
 2. Copy the `tanstack-form.tsx` component to your project
 3. Start using the TanStack Form components in your forms
 
+## Environment Configuration
+
+When wiring this template up to your own Supabase project, set both `SUPABASE_URL` (server) and `NEXT_PUBLIC_SUPABASE_URL` (client) to the REST endpoint listed in the Supabase dashboard (e.g., `https://xyzcompany.supabase.co`). Postgres connection strings are automatically normalized to that REST base, but storing the REST URL directly avoids leaking database credentials and prevents `fetch failed` errors during deployment.
+
 ## Why TanStack Form?
 
 - More type-safe approach to form management
