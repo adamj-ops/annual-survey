@@ -9,7 +9,7 @@ export function Step0Welcome() {
         <div className="max-w-2xl mx-auto px-4 text-center text-[14px] sm:text-[16px] text-muted-foreground space-y-3">
           <p className="font-semibold">We want to hear from you!</p>
           <p className="text-justify">
-            In 2024, the North American Thrombosis Forum (NATF) rebranded to Vasculearn Network (VLN)—reflecting our commitment to advancing education and collaboration across the broader spectrum of vascular health. As we continue to evolve, your perspectives are invaluable in helping us understand what's working well and where we can improve.
+            In 2024, the North American Thrombosis Forum (NATF) rebranded to Vasculearn Network (VLN)—reflecting our commitment to advancing education and collaboration across the broader spectrum of vascular health. As we continue to evolve, your perspectives are invaluable in helping us understand what&apos;s working well and where we can improve.
           </p>
           <p className="text-justify">
             Thank you for taking a few minutes to share your thoughts since the rebrand—your feedback helps shape our future programs, community, and impact.
