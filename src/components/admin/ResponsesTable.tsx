@@ -19,10 +19,12 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import { Download } from "lucide-react"
+import { Download, Trash2 } from "lucide-react"
 import { format } from "date-fns"
 import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
+import { Checkbox } from "@/components/ui/checkbox"
+import { toast } from "sonner"
 
 interface SurveyResponse {
   id: string
@@ -48,6 +50,7 @@ interface SurveyResponse {
 
 interface ResponsesTableProps {
   responses: SurveyResponse[]
+  onResponsesUpdate: (responses: SurveyResponse[]) => void
 }
 
 const familiarityLabels: Record<number, string> = {
@@ -263,13 +266,77 @@ function ResponseDetailDrawer({ response, open, onOpenChange }: { response: Surv
   )
 }
 
-export function ResponsesTable({ responses }: ResponsesTableProps) {
+export function ResponsesTable({ responses, onResponsesUpdate }: ResponsesTableProps) {
   const [selectedResponse, setSelectedResponse] = React.useState<SurveyResponse | null>(null)
   const [drawerOpen, setDrawerOpen] = React.useState(false)
+  const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
+  const [isDeleting, setIsDeleting] = React.useState(false)
 
-  const handleRowClick = (response: SurveyResponse) => {
+  const handleRowClick = (response: SurveyResponse, event: React.MouseEvent) => {
+    // Don't open drawer if clicking checkbox
+    if ((event.target as HTMLElement).closest('[role="checkbox"]')) {
+      return
+    }
     setSelectedResponse(response)
     setDrawerOpen(true)
+  }
+
+  const handleSelectAll = (checked: boolean) => {
+    if (checked) {
+      setSelectedIds(new Set(responses.map(r => r.id)))
+    } else {
+      setSelectedIds(new Set())
+    }
+  }
+
+  const handleSelectResponse = (id: string, checked: boolean) => {
+    const newSelected = new Set(selectedIds)
+    if (checked) {
+      newSelected.add(id)
+    } else {
+      newSelected.delete(id)
+    }
+    setSelectedIds(newSelected)
+  }
+
+  const handleDeleteSelected = async () => {
+    if (selectedIds.size === 0) return
+
+    setIsDeleting(true)
+    try {
+      const adminPassword = prompt("Enter admin password to delete selected responses:")
+      if (!adminPassword) {
+        setIsDeleting(false)
+        return
+      }
+
+      const response = await fetch('/api/responses', {
+        method: 'DELETE',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${adminPassword}`
+        },
+        body: JSON.stringify({ ids: Array.from(selectedIds) })
+      })
+
+      if (!response.ok) {
+        const error = await response.json()
+        throw new Error(error.message || 'Failed to delete responses')
+      }
+
+      const result = await response.json()
+      toast.success(result.message)
+
+      // Update the responses list by removing deleted items
+      const updatedResponses = responses.filter(r => !selectedIds.has(r.id))
+      onResponsesUpdate(updatedResponses)
+      setSelectedIds(new Set())
+    } catch (error) {
+      console.error('Delete error:', error)
+      toast.error(error instanceof Error ? error.message : 'Failed to delete responses')
+    } finally {
+      setIsDeleting(false)
+    }
   }
 
   const exportToCSV = () => {
@@ -337,7 +404,20 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
     <>
       <div className="space-y-4">
         <div className="flex justify-between items-center">
-          <h2 className="text-2xl font-bold">Survey Responses</h2>
+          <div className="flex items-center gap-4">
+            <h2 className="text-2xl font-bold">Survey Responses</h2>
+            {selectedIds.size > 0 && (
+              <Button
+                onClick={handleDeleteSelected}
+                variant="destructive"
+                disabled={isDeleting}
+                size="sm"
+              >
+                <Trash2 className="mr-2 h-4 w-4" />
+                Delete {selectedIds.size} Selected
+              </Button>
+            )}
+          </div>
           <Button onClick={exportToCSV} variant="outline">
             <Download className="mr-2 h-4 w-4" />
             Export CSV
@@ -351,6 +431,13 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
             </TableCaption>
             <TableHeader>
               <TableRow>
+                <TableHead className="w-[50px] min-w-[50px]">
+                  <Checkbox
+                    checked={selectedIds.size === responses.length && responses.length > 0}
+                    onCheckedChange={handleSelectAll}
+                    aria-label="Select all responses"
+                  />
+                </TableHead>
                 <TableHead className="w-[120px] min-w-[120px]">Name</TableHead>
                 <TableHead className="min-w-[200px]">Email</TableHead>
                 <TableHead className="min-w-[100px]">Role</TableHead>
@@ -374,17 +461,24 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
             <TableBody>
               {responses.length === 0 ? (
                 <TableRow>
-                  <TableCell colSpan={17} className="text-center text-muted-foreground">
+                  <TableCell colSpan={18} className="text-center text-muted-foreground">
                     No responses yet
                   </TableCell>
                 </TableRow>
               ) : (
                 responses.map((response) => (
-                  <TableRow 
+                  <TableRow
                     key={response.id}
                     className="cursor-pointer hover:bg-muted/50 transition-colors"
-                    onClick={() => handleRowClick(response)}
+                    onClick={(event) => handleRowClick(response, event)}
                   >
+                    <TableCell>
+                      <Checkbox
+                        checked={selectedIds.has(response.id)}
+                        onCheckedChange={(checked) => handleSelectResponse(response.id, checked as boolean)}
+                        aria-label={`Select response from ${response.name}`}
+                      />
+                    </TableCell>
                     <TableCell className="font-medium">{response.name}</TableCell>
                     <TableCell>{response.email}</TableCell>
                     <TableCell className="capitalize">{response.role}</TableCell>
@@ -498,7 +592,7 @@ export function ResponsesTable({ responses }: ResponsesTableProps) {
             </TableBody>
         <TableFooter>
           <TableRow>
-            <TableCell colSpan={17}>Total Responses</TableCell>
+            <TableCell colSpan={18}>Total Responses</TableCell>
             <TableCell className="text-right font-medium">
               {responses.length}
             </TableCell>

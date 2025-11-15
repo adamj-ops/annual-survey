@@ -166,8 +166,11 @@ export default function ResponsesPage() {
         </div>
       ) : (
         <>
-          <ResponsesTable responses={responses} />
-          <TestimonialsTable />
+          <ResponsesTable
+            responses={responses}
+            onResponsesUpdate={setResponses}
+          />
+          <TestimonialsTable responses={responses.filter(r => r.testimonial && r.testimonial.trim() !== '')} />
         </>
       )}
     </div>

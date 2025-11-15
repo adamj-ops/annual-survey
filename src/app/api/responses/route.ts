@@ -154,3 +154,158 @@ export async function GET(request: NextRequest) {
   }
 }
 
+export async function DELETE(request: NextRequest) {
+  try {
+    // Check for admin authentication
+    const authHeader = request.headers.get("authorization")
+    const adminPassword = (process.env.ADMIN_PASSWORD || "").trim()
+
+    // Use the set password or fallback for development
+    const finalPassword = adminPassword || "Survey2025"
+    console.log("Using admin password:", finalPassword ? "SET" : "NOT SET")
+
+    if (!authHeader) {
+      return NextResponse.json(
+        { error: "Unauthorized", message: "No authorization header provided" },
+        { status: 401 }
+      )
+    }
+
+    // Extract password from Bearer token
+    const providedPassword = authHeader.replace(/^Bearer\s+/i, "").trim()
+
+    // Compare passwords (case-sensitive, exact match)
+    if (providedPassword !== finalPassword) {
+      console.log("Password mismatch", {
+        providedLength: providedPassword.length,
+        expectedLength: finalPassword.length,
+        match: providedPassword === finalPassword
+      })
+      return NextResponse.json(
+        { error: "Invalid password", message: "The password you entered is incorrect" },
+        { status: 401 }
+      )
+    }
+
+    // Parse request body to get IDs to delete
+    let ids: string[]
+    try {
+      const body = await request.json()
+      ids = body.ids
+      if (!Array.isArray(ids) || ids.length === 0) {
+        return NextResponse.json(
+          { error: "Bad request", message: "Please provide an array of IDs to delete" },
+          { status: 400 }
+        )
+      }
+    } catch (parseError) {
+      return NextResponse.json(
+        { error: "Bad request", message: "Invalid JSON in request body" },
+        { status: 400 }
+      )
+    }
+
+    // Create Supabase admin client
+    let supabaseUrl: string
+    try {
+      supabaseUrl = getServerSupabaseUrl()
+    } catch (configError) {
+      console.error("Supabase URL configuration error:", configError)
+      return NextResponse.json(
+        {
+          error: "Server configuration error",
+          message:
+            configError instanceof Error
+              ? configError.message
+              : "Supabase URL is not configured correctly.",
+        },
+        { status: 500 }
+      )
+    }
+
+    const supabaseServiceKey = process.env.SUPABASE_SERVICE_KEY?.trim()
+
+    if (!supabaseServiceKey) {
+      console.error("Missing SUPABASE_SERVICE_KEY environment variable")
+      console.error("Available env vars:", Object.keys(process.env).filter(k => k.includes('SUPABASE')))
+      return NextResponse.json(
+        {
+          error: "Server configuration error",
+          message: "SUPABASE_SERVICE_KEY is not set.",
+        },
+        { status: 500 }
+      )
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+      global: {
+        headers: {
+          'apikey': supabaseServiceKey,
+          'Authorization': `Bearer ${supabaseServiceKey}`,
+          'Content-Type': 'application/json',
+        },
+        fetch: async (url, options = {}) => {
+          try {
+            const response = await fetch(url, {
+              ...options,
+              headers: {
+                ...options.headers,
+                'User-Agent': 'Vercel-Serverless',
+                'apikey': supabaseServiceKey,
+                'Authorization': `Bearer ${supabaseServiceKey}`,
+                'Content-Type': 'application/json',
+              },
+            })
+            return response
+          } catch (fetchError) {
+            console.error("Supabase fetch error:", {
+              url: typeof url === 'string' ? url : url.toString(),
+              error: fetchError instanceof Error ? fetchError.message : String(fetchError)
+            })
+            throw fetchError
+          }
+        },
+      },
+    })
+
+    // Delete the responses
+    const { error } = await supabase
+      .from("survey_responses")
+      .delete()
+      .in("id", ids)
+
+    if (error) {
+      console.error("Database delete error:", {
+        message: error.message,
+        details: error.details,
+        hint: error.hint,
+        code: error.code
+      })
+      return NextResponse.json(
+        {
+          error: "Failed to delete responses",
+          details: error.message,
+          hint: error.hint || "Please check your Supabase connection and database configuration"
+        },
+        { status: 500 }
+      )
+    }
+
+    return NextResponse.json({
+      success: true,
+      message: `Successfully deleted ${ids.length} response${ids.length === 1 ? '' : 's'}`,
+      deletedIds: ids
+    })
+  } catch (error) {
+    console.error("Delete error:", error)
+    return NextResponse.json(
+      { error: "Internal server error", message: error instanceof Error ? error.message : "Unknown error" },
+      { status: 500 }
+    )
+  }
+}
+
