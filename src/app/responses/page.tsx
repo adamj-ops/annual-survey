@@ -162,7 +162,10 @@ export default function ResponsesPage() {
           <div className="text-muted-foreground">Loading responses...</div>
         </div>
       ) : (
-        <ResponsesTable responses={responses} />
+        <>
+          <ResponsesTable responses={responses} />
+          <TestimonialsTable />
+        </>
       )}
     </div>
   )
