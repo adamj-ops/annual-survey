@@ -25,6 +25,17 @@ import { Separator } from "@/components/ui/separator"
 import { Badge } from "@/components/ui/badge"
 import { Checkbox } from "@/components/ui/checkbox"
 import { toast } from "sonner"
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+} from "@/components/ui/alert-dialog"
+import { Input } from "@/components/ui/input"
 
 interface SurveyResponse {
   id: string
@@ -271,6 +282,8 @@ export function ResponsesTable({ responses, onResponsesUpdate }: ResponsesTableP
   const [drawerOpen, setDrawerOpen] = React.useState(false)
   const [selectedIds, setSelectedIds] = React.useState<Set<string>>(new Set())
   const [isDeleting, setIsDeleting] = React.useState(false)
+  const [deleteDialogOpen, setDeleteDialogOpen] = React.useState(false)
+  const [deletePassword, setDeletePassword] = React.useState("")
 
   const handleRowClick = (response: SurveyResponse, event: React.MouseEvent) => {
     // Don't open drawer if clicking checkbox
@@ -299,22 +312,26 @@ export function ResponsesTable({ responses, onResponsesUpdate }: ResponsesTableP
     setSelectedIds(newSelected)
   }
 
-  const handleDeleteSelected = async () => {
+  const handleDeleteSelected = () => {
     if (selectedIds.size === 0) return
+    setDeleteDialogOpen(true)
+  }
+
+  const handleDeleteConfirm = async () => {
+    if (!deletePassword.trim()) {
+      toast.error("Please enter the admin password")
+      return
+    }
 
     setIsDeleting(true)
-    try {
-      const adminPassword = prompt("Enter admin password to delete selected responses:")
-      if (!adminPassword) {
-        setIsDeleting(false)
-        return
-      }
+    setDeleteDialogOpen(false)
 
+    try {
       const response = await fetch('/api/responses', {
         method: 'DELETE',
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': `Bearer ${adminPassword}`
+          'Authorization': `Bearer ${deletePassword.trim()}`
         },
         body: JSON.stringify({ ids: Array.from(selectedIds) })
       })
@@ -331,12 +348,18 @@ export function ResponsesTable({ responses, onResponsesUpdate }: ResponsesTableP
       const updatedResponses = responses.filter(r => !selectedIds.has(r.id))
       onResponsesUpdate(updatedResponses)
       setSelectedIds(new Set())
+      setDeletePassword("")
     } catch (error) {
       console.error('Delete error:', error)
       toast.error(error instanceof Error ? error.message : 'Failed to delete responses')
     } finally {
       setIsDeleting(false)
     }
+  }
+
+  const handleDeleteCancel = () => {
+    setDeleteDialogOpen(false)
+    setDeletePassword("")
   }
 
   const exportToCSV = () => {
@@ -602,11 +625,52 @@ export function ResponsesTable({ responses, onResponsesUpdate }: ResponsesTableP
         </div>
       </div>
 
-      <ResponseDetailDrawer 
-        response={selectedResponse} 
-        open={drawerOpen} 
-        onOpenChange={setDrawerOpen} 
+      <ResponseDetailDrawer
+        response={selectedResponse}
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
       />
+
+      <AlertDialog open={deleteDialogOpen} onOpenChange={setDeleteDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Delete Selected Responses</AlertDialogTitle>
+            <AlertDialogDescription>
+              Are you sure you want to delete {selectedIds.size} selected response{selectedIds.size === 1 ? '' : 's'}?
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <div className="py-4">
+            <label htmlFor="delete-password" className="text-sm font-medium">
+              Enter admin password to confirm:
+            </label>
+            <Input
+              id="delete-password"
+              type="password"
+              value={deletePassword}
+              onChange={(e) => setDeletePassword(e.target.value)}
+              placeholder="Admin password"
+              className="mt-2"
+              onKeyDown={(e) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  handleDeleteConfirm()
+                }
+              }}
+            />
+          </div>
+          <AlertDialogFooter>
+            <AlertDialogCancel onClick={handleDeleteCancel}>Cancel</AlertDialogCancel>
+            <AlertDialogAction
+              onClick={handleDeleteConfirm}
+              disabled={isDeleting || !deletePassword.trim()}
+              className="bg-destructive text-destructive-foreground hover:bg-destructive/90"
+            >
+              {isDeleting ? "Deleting..." : "Delete"}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </>
   )
 }
