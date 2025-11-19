@@ -50,7 +50,7 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
                     { value: "prefer_other_access", label: "I prefer to access resources another way" },
                   ]}
                   allowOther
-                  otherLabel="Other (please specify)"
+                  otherLabel="Other"
                 />
               </FormField>
             ),
