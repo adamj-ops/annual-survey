@@ -42,13 +42,12 @@ export function Step3CommunityEngagement({ form }: Step3CommunityEngagementProps
                   field={field}
                   label="What influenced your decision to join (or not join) the new VLN Community? *"
                   options={[
-                    { value: "not_aware", label: "I wasn’t aware of the community" },
-                    { value: "no_time", label: "I haven’t had time to explore it" },
+                    { value: "not_aware", label: "I wasn't aware of the community" },
+                    { value: "no_time", label: "I haven't had time to explore it" },
                     { value: "unclear_benefits", label: "I am not sure what the benefits are" },
-                    { value: "joined_valuable", label: "I’ve joined and found it valuable" },
-                    { value: "joined_no_time", label: "I’ve joined but haven’t had time to engage" },
+                    { value: "joined_valuable", label: "I've joined and found it valuable" },
+                    { value: "joined_no_time", label: "I've joined but haven't had time to engage" },
                     { value: "prefer_other_access", label: "I prefer to access resources another way" },
-                    { value: "other", label: "Other" },
                   ]}
                   allowOther
                   otherLabel="Other (please specify)"
